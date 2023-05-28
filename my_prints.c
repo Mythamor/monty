@@ -1,91 +1,63 @@
 #include "monty.h"
+
 /**
- * pall - print all nodes in stack
- * @h: head of list
- * @line_number: bytecode line number
+ * nop - Does nothing.
+ * @stack: Unused.
+ * @line_n: Unused.
  */
-void pall(stack_t **h, unsigned int line_number)
+void nop(stack_t **stack, unsigned int line_n)
 {
-	stack_t *tmp = NULL;
-
-	if (!h || !*h)
-		return;
-
-	(void) line_number;
-	tmp = *h;
-	while (tmp != NULL)
-	{
-		printf("%d\n", tmp->n);
-		tmp = tmp->next;
-	}
+	(void)*stack;
+	(void)line_n;
 }
+
 /**
- * pint - print top node in stack
- * @h: head of list
- * @line_number: bytecode line number
+ * pchar - Print the char based on ascii value.
+ * @stack: beginning of linked list.
+ * @line_n: line number.
  */
-void pint(stack_t **h, unsigned int line_number)
+void pchar(stack_t **stack, unsigned int line_n)
 {
-	if (!h || !*h)
+	stack_t *h = *stack;
+
+	if (!h)
 	{
-		printf("L%u: can't pint, stack empty\n", line_number);
+		fprintf(stderr, "L%d: can't pchar, stack empty\n", line_n);
 		exit(EXIT_FAILURE);
 	}
-	printf("%d\n", (*h)->n);
-
-}
-/**
- * pchar - print top node in stack as ascii letter
- * @h: head of list
- * @line_number: bytecode line number
- */
-void pchar(stack_t **h, unsigned int line_number)
-{
-	if (!h || !*h)
+	if (!(h->n > 64 && h->n < 91) && !(h->n > 96 && h->n < 123))
 	{
-		printf("L%u: can't pchar, stack empty\n", line_number);
+		fprintf(stderr, "L%d: can't pchar, value out of range\n", line_n);
 		exit(EXIT_FAILURE);
 	}
-	if (((*h)->n) >= 0 && ((*h)->n) <= 127)
-		printf("%c\n", (*h)->n);
-	else
-	{
-		printf("L%u: can't pchar, value out of range\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-
+	printf("%c\n", (char)h->n);
 }
-/**
- * pstr - print top nodes in stack as ascii letter
- * and stop only if end of stack, node is 0, or not in ascii table
- * @h: head of list
- * @line_number: bytecode line number
- */
-void pstr(stack_t **h, unsigned int line_number)
-{
-	stack_t *tmp;
 
-	if (!h || !*h)
-	{
-		printf("L%u: can't pchar, stack empty\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-	tmp = *h;
-	while ((tmp != NULL) && (tmp->n != 0) &&
-	       (tmp->n >= 0) && (tmp->n <= 127))
-	{
-		printf("%c", (tmp)->n);
-		tmp = tmp->next;
-	}
-	printf("\n");
-}
 /**
- * nop - do nothing
- * @h: head of list
- * @line_number: bytecode line number
+ * pstr - Print string based of ascii values in linked list.
+ * @stack: Beginning of linked list.
+ * @line_n: Line number.
  */
-void nop(stack_t **h, unsigned int line_number)
+void pstr(stack_t **stack, unsigned int line_n)
 {
-	(void) h;
-	(void) line_number;
+	stack_t *h = *stack;
+	char string[1000];
+	int i = 0;
+	(void)line_n;
+
+	memset(string, 0, 1000);
+	if (!h)
+		printf("\n");
+	while (h)
+	{
+		/*if (h->n < 1 && h->n > 127)*/
+		if (!(h->n > 64 && h->n < 91) && !(h->n > 96 && h->n < 123))
+		{
+			break;
+		}
+		string[i] = (char)h->n;
+		i++;
+		h = h->next;
+	}
+	printf("%s\n", string);
 }

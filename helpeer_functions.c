@@ -1,0 +1,86 @@
+#include "monty.h"
+/**
+ * split_newline - Tokenizes read buffer on newlines.
+ * @a: Global struct for buffers.
+ * Return: Tokenized list of commands.
+ */
+char **split_newline(buf_struct *a)
+{
+	char delim[] = "\n";
+	char *token;
+	int i = 0;
+
+	token = strtok(a->read_buff, delim);
+
+	while (token != NULL)
+	{
+		a->list_cmd[i] = token;
+		token = strtok(NULL, delim);
+		i++;
+	}
+	if (a->list_cmd[0] == NULL)
+		return (NULL);
+	return (a->list_cmd);
+}
+/**
+ * split_spaces - Tokenize each command from its value.
+ * @buff: Index from first tokenized list of commands.
+ * @a: Global struct for buffers.
+ * Return: Tokenized command.
+ */
+char **split_spaces(char *buff, buf_struct *a)
+{
+	char delim[] = " \t";
+	char *token;
+	int i = 0;
+
+	token = strtok(buff, delim);
+	while (token != NULL && i < 2)
+	{
+		a->tok_cmd[i] = token;
+		token = strtok(NULL, delim);
+		i++;
+	}
+	a->tok_cmd[i] = NULL;
+	if (a->tok_cmd[0] == NULL)
+		return (NULL);
+	if (strncmp(a->tok_cmd[0], "#", 1) == 0)
+		a->tok_cmd[0] = "nop";
+	return (a->tok_cmd);
+}
+
+/**
+  * digits_only - checks for non integer types in a string
+  * @str: string to check
+  * Return: 0 if it contains non integer type 1 if only integer type
+  */
+int digits_only(char *str)
+{
+	int i;
+
+	for (i = 0; str[i]; i++)
+		if (isdigit(str[i]) == 0)
+		{
+			if (str[i] == '-' && i == 0)
+				continue;
+			return (0);
+		}
+	return (1);
+}
+
+/**
+ * free_stack - free doubly linked list
+ * @head: start of doubly linked list
+ */
+
+void free_stack(stack_t *head)
+{
+	stack_t *hold;
+
+		while (head)
+		{
+			hold = head;
+			head = (*head).next;
+			free(hold);
+		}
+}
